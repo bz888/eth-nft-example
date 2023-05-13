@@ -1,0 +1,56 @@
+specVersion: "1.0.0"
+
+name: "store-cache-test"
+version: "0.0.1"
+runner:
+  node:
+    name: "@subql/node-ethereum"
+    version: "*"
+  query:
+    name: "@subql/query"
+    version: "*"
+description: "This project can be use as a starting point for developing your
+  new Ethereum SubQuery project"
+repository: "https://github.com/subquery/ethereum-subql-starter"
+
+schema:
+  file: "./schema.graphql"
+
+network:
+  chainId: "1284"
+  endpoint:
+    - https://rpc.api.moonbeam.network
+  dictionary: "https://api.subquery.network/sq/subquery/moonbeam-dictionary"
+
+
+dataSources:
+  - kind: ethereum/Runtime
+    startBlock: 171900
+    options:
+      abi: erc721
+    assets:
+      erc721:
+        file: "./erc721.json"
+    mapping:
+      file: "./dist/index.js"
+      handlers:
+        - handler: handleERC721
+          kind: ethereum/LogHandler
+          filter:
+            topics:
+              - Transfer(address, address, uint256)
+  - kind: ethereum/Runtime
+    startBlock: 171900
+    options:
+      abi: erc1155
+    assets:
+      erc1155:
+        file: "./erc1155.json"
+    mapping:
+      file: "./dist/index.js"
+      handlers:
+        - handler: handleERC1155single
+          kind: ethereum/LogHandler
+          filter:
+            topics:
+              - TransferSingle(address, address, address, uint256, uint256)
